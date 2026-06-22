@@ -39,6 +39,10 @@ class EnhancerService:
         Returns:
             The enhanced RGB image as a uint8 numpy array, shape (H, W, 3).
         """
+        # Ensure model is eagerly loaded outside of any tf.function symbolic context
+        # This prevents graph tracing errors during dynamic model generation/saving in test environments
+        ModelLoader.get_model()
+
         h_orig, w_orig = img.shape[:2]
         logger.info(f"Starting optimized image enhancement. Resolution: {w_orig}x{h_orig}")
 
