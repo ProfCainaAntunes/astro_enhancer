@@ -85,7 +85,52 @@ Ensure you have Python 3.10+ installed.
    ```bash
    uvicorn app.main:app --reload --port 8000
    ```
-   *Note: If `model/modelo.keras` is missing, the system will automatically generate a dummy U-Net architecture model on startup to ensure the server is immediately runnable.*
+    *Note: If `model/modelo.keras` is missing, the system will automatically generate a dummy U-Net architecture model on startup to ensure the server is immediately runnable.*
+
+### 1.1 GPU-Accelerated Backend Setup (WSL2 with NVIDIA CUDA)
+If you have an NVIDIA GPU (e.g. GeForce RTX) and want to accelerate U-Net inference on Windows, you must run the backend inside **WSL2 (Windows Subsystem for Linux)**, as native Windows GPU support was dropped in TensorFlow >= 2.11.
+
+1. **Install WSL2**: Open administrative PowerShell and run `wsl --install`. Restart your PC when prompted.
+2. **Copy the project to Linux Home**: For optimal file access performance, copy the project source code to your Ubuntu home folder (avoid running virtual environments directly inside `/mnt/c/` mounts):
+   ```bash
+   sudo apt update && sudo apt install -y rsync
+   mkdir -p ~/projects
+   rsync -av --exclude='venv' --exclude='.venv' --exclude='node_modules' --exclude='modelo.keras' --exclude='dist' /mnt/c/Projects/astro_enhancer/ ~/projects/astro_enhancer/
+   cd ~/projects/astro_enhancer/backend
+   ```
+3. **Install Python 3.10**: On Ubuntu 24.04 default (which uses Python 3.12), add the DeadSnakes repository to install Python 3.10 (fully compatible with TensorFlow CUDA packages):
+   ```bash
+   sudo add-apt-repository ppa:deadsnakes/ppa -y
+   sudo apt update
+   sudo apt install -y python3.10 python3.10-venv python3.10-dev
+   ```
+4. **Create Virtual Environment**:
+   ```bash
+   python3.10 -m venv venv
+   source venv/bin/activate
+   pip install --upgrade pip
+   pip install -r requirements.txt
+   pip install tensorflow[and-cuda]
+   ```
+5. **Configure GPU Library Path**: To ensure WSL2 driver mounts and the virtual environment's pip-installed CUDA packages are correctly loaded, append the library lookup configurations to your `venv/bin/activate` script:
+   ```bash
+   SITE_PACKAGES=$(python3 -c "import site; print(site.getsitepackages()[0])")
+   echo 'SITE_PACKAGES=$(python3 -c "import site; print(site.getsitepackages()[0])")' >> venv/bin/activate
+   echo 'CUDA_LIBS=$(find $SITE_PACKAGES/nvidia/ -type d -name "lib" | paste -sd ":" -)' >> venv/bin/activate
+   echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/wsl/lib/:$CUDA_LIBS' >> venv/bin/activate
+   
+   # Re-activate to load changes
+   source venv/bin/activate
+   ```
+6. **Verify GPU Detection**:
+   ```bash
+   python3 -c "import tensorflow as tf; print('\n>>> GPU DETECTADA:', tf.config.list_physical_devices('GPU'))"
+   ```
+7. **Run the Backend server**:
+   ```bash
+   uvicorn app.main:app --host 0.0.0.0 --port 8000
+   ```
+8. **Run the Frontend (Host Windows)**: Run the React app natively on Windows (`npm run dev` inside `C:\Projects\astro_enhancer\frontend`). WSL2 automatically bridges network ports, allowing your Windows browser to access the backend at `http://localhost:8000` seamlessly.
 
 ### 2. Running the Frontend
 Ensure you have Node.js (v18+) and npm installed.
