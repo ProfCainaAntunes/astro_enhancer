@@ -15,9 +15,9 @@ __pycache__/
 .mypy_cache/
 
 # Large Model Files
-backend/model/modelo.keras
-backend/model/*.keras
-backend/model/*.h5
+# backend/model/modelo.keras
+# backend/model/*.keras
+# backend/model/*.h5
 
 # Node / Frontend
 frontend/node_modules/
