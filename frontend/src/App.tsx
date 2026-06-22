@@ -1,4 +1,3 @@
-import React from 'react';
 import { Sparkles, AlertCircle } from 'lucide-react';
 import { useImageEnhancer } from './hooks/useImageEnhancer';
 import { UploadZone } from './components/UploadZone';

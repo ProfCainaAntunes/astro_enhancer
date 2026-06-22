@@ -24,7 +24,6 @@ export const ImageCompareSlider: React.FC<ImageCompareSliderProps> = ({
   const [panStart, setPanStart] = useState({ x: 0, y: 0 });
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const beforeImgRef = useRef<HTMLImageElement>(null);
 
   // Width/height state of container to align the clipped image correctly
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
@@ -253,7 +252,6 @@ export const ImageCompareSlider: React.FC<ImageCompareSliderProps> = ({
               className="relative flex items-center justify-center pointer-events-none"
             >
               <img
-                ref={beforeImgRef}
                 src={originalUrl}
                 alt="Original Astrophotography"
                 style={{

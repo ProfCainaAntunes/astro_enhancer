@@ -29,12 +29,12 @@ class EnhancerService:
     """Service to handle high-performance, low-memory patch-based image enhancement."""
 
     @classmethod
-    def enhance_image(cls, img: np.ndarray, forced_batch_size: int = None) -> np.ndarray:
-        """Enhances an RGB image of any resolution using optimized U-Net batch streaming.
+    def enhance_image(cls, img: np.ndarray, batch_size: int = None) -> np.ndarray:
+        """Enhances an RGB image of any resolution using U-Net sliding window batch streaming.
 
         Args:
             img: Input RGB image as a uint8 numpy array, shape (H, W, 3).
-            forced_batch_size: Optional manual batch size override. If None, uses adaptive batching.
+            batch_size: Optional manual batch size override. If None, uses adaptive batching.
 
         Returns:
             The enhanced RGB image as a uint8 numpy array, shape (H, W, 3).
@@ -64,9 +64,7 @@ class EnhancerService:
 
         # 5. Adaptive Batching Selection (Alteration 4)
         # Select batch size dynamically to trade off RAM vs CPU utilization under Render Free constraints.
-        if forced_batch_size is not None:
-            batch_size = forced_batch_size
-        else:
+        if batch_size is None:
             if total_patches <= 50:
                 batch_size = 32    # Small image: fast batch to saturate cores
             elif total_patches <= 200:
