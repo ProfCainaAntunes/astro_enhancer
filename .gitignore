@@ -1,0 +1,39 @@
+# Virtual Environments (Python)
+venv/
+.venv/
+env/
+ENV/
+backend/venv/
+backend/.venv/
+backend/env/
+
+# Python Cache & Caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+
+# Large Model Files
+backend/model/modelo.keras
+backend/model/*.keras
+backend/model/*.h5
+
+# Node / Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/local.env
+.eslintcache
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp

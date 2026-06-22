@@ -1,0 +1,27 @@
+# Git
+.git
+.gitignore
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Local testing and verification scripts
+verify_reconstruction.py
+mock_image.png
+enhanced_mock_image.png
+
+# IDE configs
+.vscode/
+.idea/
